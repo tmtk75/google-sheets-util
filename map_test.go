@@ -82,13 +82,16 @@ func TestToMapNested(t *testing.T) {
 	}
 
 	rows, err := ToMap(res)
+	if err != nil {
+		t.Fatalf("ToMap: %v", err)
+	}
 
 	if e, b := rows[0]["body"].(map[string]interface{}); !b {
 		it := rows[0]["body"]
-		t.Fatalf(`failed type assert as rows[0]["body"]: type: %v, %v`, reflect.TypeOf(it), it)
+		t.Fatalf(`failed type assert for rows[0]["body"]: type: %v, %v`, reflect.TypeOf(it), it)
 	} else {
-		if e["a"] != 1 {
-			t.Fatalf("a: expected: %v, actual: %v", 1, e["a"])
+		if e["a"] != float64(1) {
+			t.Fatalf("a: expected: %v, actual: %v", float64(1), e["a"])
 		}
 		if e["b"] != "xxx" {
 			t.Fatalf("b: expected: %v, actual: %v", "xxx", e["a"])
@@ -103,14 +106,17 @@ func TestToMapNested(t *testing.T) {
 }
 
 func TestToMapTyped(t *testing.T) {
-	res, err := srv.Spreadsheets.Values.Get(spreadsheetId, "typed!A1:B").Do()
+	res, err := srv.Spreadsheets.Values.Get(spreadsheetId, "typed!A1:A").Do()
 	if err != nil {
 		t.Fatalf("Spreadsheets.Values.Get: %v", err)
 	}
 
 	rows, err := ToMap(res)
+	if err != nil {
+		t.Fatalf("ToMap: %v", err)
+	}
 
-	expect := []interface{}{123, true, false, nil}
+	expect := []interface{}{float64(123), true, false, nil, "hello"}
 	for i, e := range rows {
 		if e["v"] != expect[i] {
 			t.Fatalf("[%v]: expected: %v(%v), actual: %v(%v)",
