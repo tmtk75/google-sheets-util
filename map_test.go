@@ -110,3 +110,30 @@ func TestToMapTyped(t *testing.T) {
 		}
 	}
 }
+
+func TestToMapSparse(t *testing.T) {
+	res, err := srv.Spreadsheets.Values.Get(spreadsheetId, "sparse!A1:D").Do()
+	if err != nil {
+		t.Fatalf("Spreadsheets.Values.Get: %v", err)
+	}
+
+	rows, err := ToMap(res)
+	if err != nil {
+		t.Fatalf("ToMap: %v", err)
+	}
+
+	expect := []map[string]interface{}{
+		{"a": float64(1), "b": nil, "c": nil, "d": nil},
+		{"a": "", "b": float64(2), "c": nil, "d": nil},
+		{"a": "", "b": "", "c": float64(3), "d": nil},
+		{"a": "", "b": "", "c": "", "d": float64(4)},
+	}
+	for i, e := range rows {
+		for j, v := range expect[i] {
+			idx := j
+			if e[idx] != v {
+				t.Fatalf("[%v, %v]: expected: %v, actual: %v", j, i, v, e[idx])
+			}
+		}
+	}
+}
