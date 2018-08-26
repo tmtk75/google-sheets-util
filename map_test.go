@@ -1,12 +1,9 @@
 package sheetsutil
 
 import (
-	"io/ioutil"
 	"reflect"
 	"testing"
 
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
 	"google.golang.org/api/sheets/v4"
 )
 
@@ -17,21 +14,11 @@ var (
 )
 
 func init() {
-	b, err := ioutil.ReadFile("./credentials.json") // TODO: Support anonymous access, can I?
+	s, err := NewSheetService()
 	if err != nil {
-		panic(err)
+		panic(nil)
 	}
-	conf, err := google.JWTConfigFromJSON(b, "https://www.googleapis.com/auth/spreadsheets")
-	if err != nil {
-		panic(err)
-	}
-
-	client := conf.Client(oauth2.NoContext)
-
-	srv, err = sheets.New(client)
-	if err != nil {
-		panic(err)
-	}
+	srv = s
 }
 
 func TestToMap(t *testing.T) {
