@@ -101,3 +101,21 @@ func TestToMapNested(t *testing.T) {
 		}
 	}
 }
+
+func TestToMapTyped(t *testing.T) {
+	res, err := srv.Spreadsheets.Values.Get(spreadsheetId, "typed!A1:B").Do()
+	if err != nil {
+		t.Fatalf("Spreadsheets.Values.Get: %v", err)
+	}
+
+	rows, err := ToMap(res)
+
+	expect := []interface{}{123, true, false, nil}
+	for i, e := range rows {
+		if e["v"] != expect[i] {
+			t.Fatalf("[%v]: expected: %v(%v), actual: %v(%v)",
+				i, expect[i], reflect.TypeOf(expect[i]),
+				e["v"], reflect.TypeOf(e["v"]))
+		}
+	}
+}
