@@ -2,6 +2,7 @@ package sheetsutil
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"google.golang.org/api/sheets/v4"
@@ -20,14 +21,12 @@ func ToMap(resp *sheets.ValueRange) ([]map[string]interface{}, error) {
 			//fmt.Printf("header: %v\n", k)
 			continue
 		}
-		// Print columns A and E, which correspond to indices 0 and 4.
-		//fmt.Printf("%s\n", row)
+
 		e := make(map[string]interface{})
 		for j, v := range row {
 			idx := k[j]
 			if a, b := v.(string); b {
 				var t map[string]interface{}
-				//fmt.Printf("a: %v\n", a)
 				if err := json.Unmarshal([]byte(a), &t); err == nil {
 					e[idx] = t // as JSON
 					continue
@@ -46,9 +45,10 @@ func ToMap(resp *sheets.ValueRange) ([]map[string]interface{}, error) {
 
 				e[idx] = a // as raw string
 				continue
+			} else {
+				return nil, fmt.Errorf("unexpected path: %v", row)
 			}
 
-			//fmt.Printf("fail to assert\n")
 			e[idx] = v
 		}
 
