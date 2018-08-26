@@ -14,7 +14,7 @@ var (
 )
 
 func init() {
-	s, err := NewSheetService()
+	s, err := NewSheetService("./credentials.json")
 	if err != nil {
 		panic(nil)
 	}

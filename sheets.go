@@ -8,8 +8,8 @@ import (
 	"google.golang.org/api/sheets/v4"
 )
 
-func NewSheetService() (*sheets.Service, error) {
-	b, err := ioutil.ReadFile("./credentials.json") // TODO: Support anonymous access, can I?
+func NewSheetService(path string) (*sheets.Service, error) {
+	b, err := ioutil.ReadFile(path) // TODO: Support anonymous access, can I?
 	if err != nil {
 		return nil, err
 	}
