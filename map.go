@@ -2,7 +2,6 @@ package sheetsutil
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 
 	"google.golang.org/api/sheets/v4"
@@ -31,28 +30,28 @@ func ToMap(resp *sheets.ValueRange) ([]map[string]interface{}, error) {
 				//fmt.Printf("a: %v\n", a)
 				if err := json.Unmarshal([]byte(a), &t); err == nil {
 					e[idx] = t // as JSON
-				} else {
-					var s interface{}
-					if err := json.Unmarshal([]byte(a), &s); err == nil {
-						e[idx] = s // as something
-					} else {
-						if p, err := strconv.ParseBool(a); err == nil {
-							e[idx] = p
-						} else {
-							if a == "<null>" {
-								fmt.Printf("hi: %v, %v, %v\n", i, j, a)
-								e[idx] = nil
-							} else {
-								e[idx] = a // as raw string
-							}
-						}
-					}
+					continue
 				}
-			} else {
-				fmt.Printf("fail to assert\n")
-				e[k[j]] = v
+
+				var s interface{}
+				if err := json.Unmarshal([]byte(a), &s); err == nil {
+					e[idx] = s // as something
+					continue
+				}
+
+				if p, err := strconv.ParseBool(a); err == nil {
+					e[idx] = p
+					continue
+				}
+
+				e[idx] = a // as raw string
+				continue
 			}
+
+			//fmt.Printf("fail to assert\n")
+			e[idx] = v
 		}
+
 		m[i-1] = e
 	}
 	return m, nil

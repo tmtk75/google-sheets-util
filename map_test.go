@@ -2,7 +2,6 @@ package sheetsutil
 
 import (
 	"io/ioutil"
-	"net/http"
 	"reflect"
 	"testing"
 
@@ -14,8 +13,7 @@ import (
 const spreadsheetId = "13zo1qomUg6Dgh0B8Sr53BwhFnqrsxcYnso_p9pM9meg"
 
 var (
-	client *http.Client
-	srv    *sheets.Service
+	srv *sheets.Service
 )
 
 func init() {
@@ -28,7 +26,7 @@ func init() {
 		panic(err)
 	}
 
-	client = conf.Client(oauth2.NoContext)
+	client := conf.Client(oauth2.NoContext)
 
 	srv, err = sheets.New(client)
 	if err != nil {
