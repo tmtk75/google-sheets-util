@@ -8,12 +8,16 @@ import (
 	"google.golang.org/api/sheets/v4"
 )
 
-func NewSheetService(path string) (*sheets.Service, error) {
+type Service struct {
+	*sheets.Service
+}
+
+func NewSheetService(path string) (*Service, error) {
 	b, err := ioutil.ReadFile(path) // TODO: Support anonymous access, can I?
 	if err != nil {
 		return nil, err
 	}
-	conf, err := google.JWTConfigFromJSON(b, "https://www.googleapis.com/auth/spreadsheets")
+	conf, err := google.JWTConfigFromJSON(b, "https://www.googleapis.com/auth/spreadsheets.readonly")
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +29,11 @@ func NewSheetService(path string) (*sheets.Service, error) {
 		return nil, err
 	}
 
-	return srv, nil
+	return &Service{Service: srv}, nil
+}
+
+func (s *Service) Fetch(id, address string) ([][]*sheets.CellData, error) {
+	return Fetch(s.Service, id, address)
 }
 
 func Fetch(srv *sheets.Service, id, address string) ([][]*sheets.CellData, error) {
