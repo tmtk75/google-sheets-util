@@ -3,14 +3,12 @@ package sheetsutil
 import (
 	"reflect"
 	"testing"
-
-	"google.golang.org/api/sheets/v4"
 )
 
 const spreadsheetId = "13zo1qomUg6Dgh0B8Sr53BwhFnqrsxcYnso_p9pM9meg"
 
 var (
-	srv *sheets.Service
+	srv *Service
 )
 
 func init() {
