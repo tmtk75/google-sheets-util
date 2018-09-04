@@ -26,24 +26,7 @@ func ToMap(resp *sheets.ValueRange) ([]map[string]interface{}, error) {
 		for j, v := range row {
 			idx := k[j]
 			if a, b := v.(string); b {
-				var t map[string]interface{}
-				if err := json.Unmarshal([]byte(a), &t); err == nil {
-					e[idx] = t // as JSON
-					continue
-				}
-
-				var s interface{}
-				if err := json.Unmarshal([]byte(a), &s); err == nil {
-					e[idx] = s // as something
-					continue
-				}
-
-				if p, err := strconv.ParseBool(a); err == nil {
-					e[idx] = p
-					continue
-				}
-
-				e[idx] = a // as raw string
+				e[idx] = ToValue(a)
 				continue
 			} else {
 				return nil, fmt.Errorf("unexpected path: %v", row)
@@ -55,4 +38,44 @@ func ToMap(resp *sheets.ValueRange) ([]map[string]interface{}, error) {
 		m[i-1] = e
 	}
 	return m, nil
+}
+
+func ToMapString(vals [][]string) ([]map[string]interface{}, error) {
+	k := make([]string, len(vals[0]))
+	m := make([]map[string]interface{}, len(vals)-1)
+	for i, row := range vals {
+		if i == 0 {
+			for j, v := range row {
+				k[j] = v
+			}
+			continue
+		}
+
+		e := make(map[string]interface{})
+		for j, v := range row {
+			idx := k[j]
+			e[idx] = ToValue(v)
+		}
+
+		m[i-1] = e
+	}
+	return m, nil
+}
+
+func ToValue(a string) interface{} {
+	var t map[string]interface{}
+	if err := json.Unmarshal([]byte(a), &t); err == nil {
+		return t // as JSON
+	}
+
+	var s interface{}
+	if err := json.Unmarshal([]byte(a), &s); err == nil {
+		return s // as something
+	}
+
+	if p, err := strconv.ParseBool(a); err == nil {
+		return p
+	}
+
+	return a // as raw string
 }
