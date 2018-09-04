@@ -40,6 +40,15 @@ func ToMap(resp *sheets.ValueRange) ([]map[string]interface{}, error) {
 	return m, nil
 }
 
+/*
+ * Table to MapArray.
+ * 1st line is used as key names.
+ *
+ * [0] a | b | c
+ *     --|---|---  --> [{a:1, b:2, c:3}, {a:A, b:B, c:C}]
+ * [1] 1 | 2 | 3
+ * [2] A | B | C
+ */
 func ToMapString(vals [][]string) ([]map[string]interface{}, error) {
 	k := make([]string, len(vals[0]))
 	m := make([]map[string]interface{}, len(vals)-1)
