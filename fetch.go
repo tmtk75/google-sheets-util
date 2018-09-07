@@ -1,6 +1,8 @@
 package sheetsutil
 
-import sheets "google.golang.org/api/sheets/v4"
+import (
+	sheets "google.golang.org/api/sheets/v4"
+)
 
 func FetchCells(srv *sheets.Service, id, address string) ([][]*sheets.CellData, error) {
 	res, err := srv.Spreadsheets.Get(id).Ranges(address).Fields("sheets(properties,data.rowData.values(formattedValue,note))").Do()
@@ -26,10 +28,19 @@ func ToCellData2D(res *sheets.Spreadsheet) [][]*sheets.CellData {
 	return rows
 }
 
-func FetchSheets(srv *sheets.Service, id string) ([]*sheets.CellData, error) {
-	_, err := srv.Spreadsheets.Get(id).Fields("sheets(properties)").Do()
+type Sheet struct {
+	*sheets.SheetProperties
+}
+
+func FetchSheets(srv *sheets.Service, id string) ([]Sheet, error) {
+	res, err := srv.Spreadsheets.Get(id).Fields("sheets(properties)").Do()
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+	//fmt.Printf("%v", res.Sheets[0].Properties)
+	sheets := make([]Sheet, len(res.Sheets))
+	for i, s := range res.Sheets {
+		sheets[i] = Sheet{s.Properties}
+	}
+	return sheets, nil
 }

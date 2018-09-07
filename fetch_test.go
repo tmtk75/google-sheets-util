@@ -20,7 +20,18 @@ func TestFetchCells(t *testing.T) {
 }
 
 func TestFetchSheets(t *testing.T) {
-	_, err := FetchSheets(srv.Service, spreadsheetId)
+	sheets, err := FetchSheets(srv.Service, spreadsheetId)
 
 	assert.Nil(t, err)
+	assert.Equal(t, 4, len(sheets))
+	assert.Equal(t, "capital", sheets[0].Title)
+	assert.Equal(t, "nested", sheets[1].Title)
+	assert.Equal(t, "typed", sheets[2].Title)
+	assert.Equal(t, "sparse", sheets[3].Title)
+
+	assert.Equal(t, int64(0), sheets[0].SheetId)
+	assert.Equal(t, int64(1054988972), sheets[1].SheetId)
+	assert.Equal(t, int64(2135743257), sheets[2].SheetId)
+	assert.Equal(t, int64(291192554), sheets[3].SheetId)
+
 }
