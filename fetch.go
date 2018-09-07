@@ -25,3 +25,11 @@ func ToCellData2D(res *sheets.Spreadsheet) [][]*sheets.CellData {
 	}
 	return rows
 }
+
+func FetchSheets(srv *sheets.Service, id string) ([]*sheets.CellData, error) {
+	_, err := srv.Spreadsheets.Get(id).Fields("sheets(properties)").Do()
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}

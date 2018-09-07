@@ -8,7 +8,7 @@ import (
 
 func TestFetchCells(t *testing.T) {
 	t.Run("capital!A1:B", func(t *testing.T) {
-		cells, err := srv.FetchCells(spreadsheetId, "capital!A1:B")
+		cells, err := FetchCells(srv.Service, spreadsheetId, "capital!A1:B")
 
 		assert.Nil(t, err)
 		assert.Equal(t, 4, len(cells))
@@ -17,4 +17,10 @@ func TestFetchCells(t *testing.T) {
 		assert.Equal(t, "Korea", cells[3][0].FormattedValue)
 		assert.Equal(t, "Soul", cells[3][1].FormattedValue)
 	})
+}
+
+func TestFetchSheets(t *testing.T) {
+	_, err := FetchSheets(srv.Service, spreadsheetId)
+
+	assert.Nil(t, err)
 }
