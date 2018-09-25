@@ -49,7 +49,7 @@ func ToMap(resp *sheets.ValueRange) ([]map[string]interface{}, error) {
  * [1] 1 | 2 | 3
  * [2] A | B | C
  */
-func ToMapString(vals [][]string) ([]map[string]interface{}, error) {
+func ToMapArray(vals [][]string) ([]map[string]interface{}, error) {
 	k := make([]string, len(vals[0]))
 	m := make([]map[string]interface{}, len(vals)-1)
 	for i, row := range vals {
