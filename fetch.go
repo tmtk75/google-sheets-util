@@ -6,12 +6,11 @@ import (
 	sheets "google.golang.org/api/sheets/v4"
 )
 
-func FetchCells(srv *sheets.Service, id, address string) ([][]*sheets.CellData, error) {
-	res, err := srv.Spreadsheets.Get(id).Ranges(address).Fields("sheets(properties,data(rowMetadata(hiddenByUser),rowData.values(formattedValue,note)))").Do()
-	if err != nil {
-		return nil, err
-	}
-	return ToCellDataArrays(res), nil
+// simple wrapper struct
+type Sheet struct {
+	*sheets.SheetProperties
+	Cells    [][]*sheets.CellData // may be nil
+	GridData *sheets.GridData     // may be nil
 }
 
 func ToCellDataArrays(res *sheets.Spreadsheet) [][]*sheets.CellData {
@@ -28,12 +27,6 @@ func ToCellDataArrays(res *sheets.Spreadsheet) [][]*sheets.CellData {
 		}
 	}
 	return rows
-}
-
-type Sheet struct {
-	*sheets.SheetProperties
-	Cells    [][]*sheets.CellData // may be nil
-	GridData *sheets.GridData     // may be nil
 }
 
 func FetchSheets(srv *sheets.Service, id string) ([]Sheet, error) {

@@ -32,6 +32,6 @@ func NewSheetService(path string) (*Service, error) {
 	return &Service{Service: srv}, nil
 }
 
-func (s *Service) FetchCells(id, address string) ([][]*sheets.CellData, error) {
-	return FetchCells(s.Service, id, address)
+func (s *Service) FetchSheet(id, address string) (*Sheet, error) {
+	return FetchSheet(s.Service, id, address)
 }
