@@ -63,29 +63,12 @@ func FetchSheet(srv *sheets.Service, id, address string) (*Sheet, error) {
 	if len(it.Data) != 1 {
 		return nil, fmt.Errorf("unexpected count of data. len: %v", len(it.Data))
 	}
-	data := it.Data[0]
-
-	//
-	grid := sheets.GridData{
-		RowMetadata:    make([]*sheets.DimensionProperties, len(data.RowMetadata)),
-		ColumnMetadata: make([]*sheets.DimensionProperties, len(data.ColumnMetadata)),
-	}
 
 	// Fill Cells
 	s := Sheet{
 		SheetProperties: it.Properties,
-		GridData:        &grid,
+		GridData:        it.Data[0],
 		Cells:           ToCellDataArrays(res),
-	}
-
-	// Fill GridData
-	for i, r := range data.RowMetadata {
-		grid.RowMetadata[i] = new(sheets.DimensionProperties)
-		grid.RowMetadata[i].HiddenByUser = r.HiddenByUser
-	}
-	for i, r := range data.ColumnMetadata {
-		grid.ColumnMetadata[i] = new(sheets.DimensionProperties)
-		grid.ColumnMetadata[i].HiddenByUser = r.HiddenByUser
 	}
 
 	return &s, nil
