@@ -13,6 +13,18 @@ type Sheet struct {
 	GridData *sheets.GridData     // may be nil
 }
 
+/* row: index starts with 0 */
+func (s *Sheet) HiddenByUser(row int) bool {
+	if s.GridData == nil {
+		return false
+	}
+	i := row + 1 // 0 is for header
+	if row >= len(s.GridData.RowMetadata) {
+		return false
+	}
+	return s.GridData.RowMetadata[i].HiddenByUser
+}
+
 func ToCellDataArrays(res *sheets.Spreadsheet) [][]*sheets.CellData {
 	rows := make([][]*sheets.CellData, 0)
 	for _, sheet := range res.Sheets {
