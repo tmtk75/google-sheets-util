@@ -68,6 +68,10 @@ func ToMapArray(vals [][]string, toValue ValueFunc) ([]map[string]interface{}, e
 
 		e := make(map[string]interface{})
 		for j, v := range row {
+			//fmt.Printf("j: %v, v: %v, k[j]: %v\n", j, v, k[j])
+			if j >= len(k) {
+				return nil, fmt.Errorf(`no key_name for column[%v] which the value is "%v". give a value or "key_name" in the note`, j, v)
+			}
 			idx := k[j]
 			tv, err := toValue(v, i, j)
 			if err != nil {
