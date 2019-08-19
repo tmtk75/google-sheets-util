@@ -77,6 +77,9 @@ func ToMapArray(vals [][]string, toValue ValueFunc) ([]map[string]interface{}, e
 			if err != nil {
 				return nil, err
 			}
+			if tv == nil && err == nil {
+				continue // skip it
+			}
 			e[idx] = tv
 		}
 
